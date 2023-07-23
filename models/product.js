@@ -30,6 +30,12 @@ const productSchema = new mongoose.Schema({
         required: true,
         trim: true,
         maxlength: 1000
+    },
+    url_product: {
+        type: String,
+        required: true,
+        trim: true,
+        maxlength: 1000
     }
 });
 
