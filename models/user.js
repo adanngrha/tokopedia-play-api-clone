@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema({
         trim: true,
         maxlength: 100
     },
+    url_avatar: {
+        type: String,
+        trim: true,
+        maxlength: 100
+    },
 });
 
 module.exports = mongoose.model('User', userSchema);
