@@ -13,7 +13,7 @@ const commentSchema = new mongoose.Schema({
         trim: true,
         maxlength: 100
     },
-    user_id: {
+    username: {
         type: String,
         required: true,
         trim: true,
