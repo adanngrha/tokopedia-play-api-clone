@@ -16,7 +16,7 @@ exports.getAll = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const videoId = req.params.videoId;
-        const id = uuidv4();
+        const id = `product-${uuidv4()}`;
         const { title, price, url_image, url_product } = req.body;
         const product = new Product({
             _id: id,

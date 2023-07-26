@@ -6,7 +6,7 @@ exports.register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
         const url_avatar = `https://ui-avatars.com/api/?name=${username}`;
-        const id = uuidv4()
+        const id = `user-${uuidv4()}`;
 
         const user = await User.create({ _id: id, username, email, password, url_avatar });
 

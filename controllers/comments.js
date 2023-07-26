@@ -16,7 +16,7 @@ exports.getAll = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const videoId = req.params.videoId;
-        const id = uuidv4();
+        const id = `comment-${uuidv4()}`;
         const { username, comment } = req.body;
         const newComment = new Comment({
             _id: id,

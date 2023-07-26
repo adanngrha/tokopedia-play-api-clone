@@ -26,7 +26,7 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const { title, description, url_video, url_thumbnail } = req.body;
-        const id = uuidv4();
+        const id = `video-${uuidv4()}`;
         const video = await Video.create(
             { _id: id, title, description, url_video, url_thumbnail });
 
