@@ -30,6 +30,10 @@ const videoSchema = new mongoose.Schema({
         required: true,
         trim: true,
         maxlength: 1000
+    },
+    created_at: {
+        type: Date,
+        default: Date.now
     }
 });
 

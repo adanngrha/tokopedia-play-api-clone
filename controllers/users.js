@@ -5,26 +5,72 @@ const { v4: uuidv4 } = require('uuid');
 exports.register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        const url_avatar = `https://ui-avatars.com/api/?name=${username}`;
-        const id = `user-${uuidv4()}`;
 
+        if (email === '' || password === '') {
+            return res.status(400).json({
+                'status': 'failed',
+                'message': 'email and password required'
+            });
+        }
+
+        const id = `user-${uuidv4()}`;
+        const url_avatar = `https://ui-avatars.com/api/?name=${username}`;
         const user = await User.create({ _id: id, username, email, password, url_avatar });
 
-        return res.status(201).json({ 'message': "User created", 'user': user });
+        return res.status(201).json({
+            'status': 'success',
+            'message': 'user successfully registered',
+            'data': user
+        });
     }
-    catch (err) {
-        return res.status(500).json({ 'message': err.message });
+    catch (error) {
+        return res.status(500).json({
+            'status': 'failed',
+            'message': error.message
+        });
     }
 }
 
 exports.login = async (req, res) => {
-    const token = jwt.sign(
-        { email: req.body.email, password: req.body.password },
-        process.env.SECRET_KEY, { expiresIn: '1h'});
+    try {
+        const { email, password } = req.body;
 
-    return res.json({ auth: true, token:token });
+        if (email === '' || password === '') {
+            return res.status(400).json({
+                'status': 'failed',
+                'message': 'email and password required'
+            });
+        }
+
+        const user = await User.find({ email: email}).count();
+
+        if (user === 0) {
+            return res.status(404).json({
+                'status': 'failed',
+                'message': 'user not found'
+            });
+        }
+
+        const token = jwt.sign(
+            { email: email, password: email },
+            process.env.SECRET_KEY, { expiresIn: '4h'});
+
+        return res.status(200).json({
+            'status': 'success',
+            'message': 'user successfully logged in',
+            'token': token
+        });
+    } catch (error) {
+        return res.status(500).json({
+            'status': 'failed',
+            'message': error.message
+        });
+    }
 }
 
 exports.logout = async (req, res) => {
-    return res.json({ 'auth': false, 'message': "Logout successfully" });
+    return res.status(200).json({
+        'status': 'success',
+        'message': 'user successfully logged out'
+    });
 }
