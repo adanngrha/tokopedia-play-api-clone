@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { v4: uuidv4 } = require('uuid');
+const bycrypt = require('bcrypt');
+const saltRounds = 10;
 
 exports.register = async (req, res) => {
     try {
@@ -15,7 +17,10 @@ exports.register = async (req, res) => {
 
         const id = `user-${uuidv4()}`;
         const url_avatar = `https://ui-avatars.com/api/?name=${username}`;
-        const user = await User.create({ _id: id, username, email, password, url_avatar });
+        const hashed = await bycrypt.hash(password, saltRounds);
+        const user = await User.create({
+            _id: id, username, email, password: hashed, url_avatar
+        });
 
         return res.status(201).json({
             'status': 'success',
@@ -42,12 +47,21 @@ exports.login = async (req, res) => {
             });
         }
 
-        const user = await User.find({ email: email}).count();
+        const user = await User.find({ email: email});
 
-        if (user === 0) {
+        if (user.length === 0) {
             return res.status(404).json({
                 'status': 'failed',
                 'message': 'user not found'
+            });
+        }
+
+        const match = await bycrypt.compare(password, user[0].password);
+
+        if (!match) {
+            return res.status(400).json({
+                'status': 'failed',
+                'message': 'password incorrect'
             });
         }
 
