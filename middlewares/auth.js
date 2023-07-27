@@ -12,7 +12,7 @@ exports.authentication = (req, res, next) => {
             return res.status(500).json({ auth: false, message: 'Failed to authenticate token' });
         }
 
-        req.userId = decoded.id;
+        req.username = decoded.username;
 
         next();
     });

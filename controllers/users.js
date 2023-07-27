@@ -8,13 +8,6 @@ exports.register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        if (email === '' || password === '') {
-            return res.status(400).json({
-                'status': 'failed',
-                'message': 'email and password required'
-            });
-        }
-
         const id = `user-${uuidv4()}`;
         const url_avatar = `https://ui-avatars.com/api/?name=${username}`;
         const hashed = await bycrypt.hash(password, saltRounds);
@@ -28,26 +21,19 @@ exports.register = async (req, res) => {
             'data': user
         });
     }
-    catch (error) {
+    catch (err) {
         return res.status(500).json({
             'status': 'failed',
-            'message': error.message
+            'message': err.message
         });
     }
 }
 
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
-        if (email === '' || password === '') {
-            return res.status(400).json({
-                'status': 'failed',
-                'message': 'email and password required'
-            });
-        }
-
-        const user = await User.find({ email: email});
+        const user = await User.find({ username: username});
 
         if (user.length === 0) {
             return res.status(404).json({
@@ -66,23 +52,25 @@ exports.login = async (req, res) => {
         }
 
         const token = jwt.sign(
-            { email: email, password: email },
-            process.env.SECRET_KEY, { expiresIn: '4h'});
+            { username: username, password: password },
+            process.env.SECRET_KEY, { expiresIn: '3h'});
 
         return res.status(200).json({
             'status': 'success',
             'message': 'user successfully logged in',
             'token': token
         });
-    } catch (error) {
+    } catch (err) {
         return res.status(500).json({
             'status': 'failed',
-            'message': error.message
+            'message': err.message
         });
     }
 }
 
 exports.logout = async (req, res) => {
+
+
     return res.status(200).json({
         'status': 'success',
         'message': 'user successfully logged out'
