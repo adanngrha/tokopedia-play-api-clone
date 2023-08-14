@@ -10,13 +10,23 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(process.env.MONGO_CONNECTION_STRING, )
+if (process.env.NODE_ENV === 'production') {
+  mongoose.connect(process.env.MONGO_CONNECTION_STRING_PROD)
   .then(() => {
-    console.log('Connected to MongoDB')
+    console.log('Connected to MongoDB Atlas')
 })
   .catch(err => {
     console.log(err)
 });
+} else {
+  mongoose.connect(process.env.MONGO_CONNECTION_STRING_DEV)
+  .then(() => {
+    console.log('Connected to Local MongoDB')
+})
+  .catch(err => {
+    console.log(err)
+});
+}
 
 app.use('/api', routes);
 
