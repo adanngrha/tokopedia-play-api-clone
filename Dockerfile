@@ -1,20 +1,20 @@
+# Use Node.js version 18
 FROM node:18
 
-# Create app directory
-WORKDIR /usr/src/app
+# Create and set the working directory
+WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+# Copy package.json and package-lock.json files to the working directory
 COPY package*.json ./
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
+# Install production dependencies
+RUN npm install --only=production
 
-# Bundle app source
+# Copy the rest of the application code to the working directory
 COPY . .
 
-EXPOSE 3080
+# Set environment variable for running in production mode
+ENV NODE_ENV=production
 
-CMD [ "node", "server.js" ]
+# Set the command to run the application
+CMD [ "npm", "run", "start" ]
