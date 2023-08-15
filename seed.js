@@ -11,16 +11,22 @@ const { seedVideos } = require('./seeders/videoSeeder');
 const { seedProducts } = require('./seeders/productSeeder');
 const { seedComments } = require('./seeders/commentSeeder');
 
-mongoose.connect(process.env.MONGODB_URI)
+let mongoURL, log;
+if (process.env.NODE_ENV === 'production') {
+    mongoURL = process.env.MONGO_CONNECTION_STRING_PROD;
+    log = 'Connected to MongoDB Atlas';
+} else {
+    mongoURL = process.env.MONGO_CONNECTION_STRING_DEV;
+    log = 'Connected to MongoDB Local';
+}
+
+mongoose.connect(mongoURL)
     .then(() => {
-        console.log('Connected to MongoDB')
+        console.log(log)
     })
     .catch(err => {
         console.log(err)
     });
-
-
-
 
 const seedDB = async () => {
     // hashing

@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   mongoose.connect(process.env.MONGO_CONNECTION_STRING_DEV)
   .then(() => {
-    console.log('Connected to Local MongoDB')
+    console.log('Connected to MongoDB Local')
 })
   .catch(err => {
     console.log(err)
